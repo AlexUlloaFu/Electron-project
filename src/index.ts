@@ -17,6 +17,8 @@ const store = new Store<StoreType>(
   }
 ) ;
 
+const isDevelopment = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -31,7 +33,7 @@ const createWindow = (): void => {
     height: 600,
     width: 800,
     webPreferences: {
-      devTools: true,
+      devTools: isDevelopment,      
       webSecurity: false,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       nodeIntegration: true,
@@ -95,6 +97,8 @@ ipcMain.handle('setStoreValue', (event, key , value) => {
 });
 
 ipcMain.handle('removeStoreValue', (event, key) => {
+  console.log('el finde seman y no estar sitiento ooooo',key);
+  
 	// @ts-expect-error ts is not getting the required type
   return store.delete(key);
 });

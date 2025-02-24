@@ -10,7 +10,7 @@ export const apiClient = {
   },
 
   fetchWrapper: async (url: string, method: string, body?: unknown) => {
-    const token = await window.store.get('token').toString();
+    const token = await window.store.get('token')
     
     const headers = {
       'Content-Type': 'application/json',

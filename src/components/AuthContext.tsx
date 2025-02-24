@@ -18,7 +18,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = await window.store.get('token').toString();
+        const token = await window.store.get('token')
         setIsAuthenticated(!!token);
       } catch (error) {
         console.error('Auth check error:', error);

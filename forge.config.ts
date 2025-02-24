@@ -16,7 +16,41 @@ const config: ForgeConfig = {
     asar: true,
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+  makers: [
+    // Windows Squirrel Installer (.exe)
+    new MakerSquirrel({
+      name: "your_app_name",
+      authors: "Your Name",
+      description: "Your app description",
+      // Optional: Code signing certificate
+      // certificateFile: "./cert.pfx",
+      // certificatePassword: process.env.CERT_PASSWORD
+    }),
+    
+    // ZIP for macOS (cross-platform builds)
+    new MakerZIP({}), // Fix typo: 'darwin' (macOS), not 'darwin'
+    
+    // Linux packages
+    new MakerDeb({
+      options: {
+        name: "your_app_name",
+        productName: "Your App Name",
+        version: "1.0.0",
+        description: "Your app description",
+        maintainer: "Your Name <email@example.com>",
+        homepage: "https://your-app.com",
+        categories: ["Utility"],
+        depends: [ // Critical dependencies for Electron apps
+          "libgtk-3-0",
+          "libnotify4",
+          "libnss3",
+          "libxss1",
+          "libxtst6",
+          "xdg-utils"
+        ]
+      }
+  })
+  ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
