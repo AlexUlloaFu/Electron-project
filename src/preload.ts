@@ -4,11 +4,8 @@ contextBridge.exposeInMainWorld('videoUtils', {
   getVideoFiles: (folderPath: string) => ipcRenderer.invoke('get-video-files', folderPath),
 });
 
-
-contextBridge.exposeInMainWorld('secureStorage', {
-  encrypt: (data: string) => {
-    console.log('Encryption request:', data);
-    return ipcRenderer.invoke('encrypt-data', data);
-  },
-  decrypt: (buffer: Buffer) => ipcRenderer.invoke('decrypt-data', buffer)
-});
+contextBridge.exposeInMainWorld('store', {
+  get: (key : string) => ipcRenderer.invoke("getStoreValue",key),
+  set: (key : string, value : unknown) => ipcRenderer.invoke('setStoreValue', key, value),
+  remove: (key : string) => ipcRenderer.invoke('removeStoreValue', key),
+})

@@ -18,7 +18,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = await authService.getToken();
+        const token = await window.store.get('token').toString();
         setIsAuthenticated(!!token);
       } catch (error) {
         console.error('Auth check error:', error);
@@ -35,10 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const { token, error } = await authService.login(email, password);
       if (error || !token) throw new Error(error || 'Login failed');
-      console.log('Received token:', token);
-      await authService.storeToken(token);
-      console.log('Token stored successfully');
-      
+      await window.store.set('token',token);
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Login error:', error);
@@ -51,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       const { token, error } = await authService.register(email, password);
       if (error || !token) throw new Error(error || 'Registration failed');
-      await authService.storeToken(token);
+      await window.store.set('token',token);
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Registration error:', error);
@@ -61,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await authService.clearToken();
+      await window.store.remove('token');
       setIsAuthenticated(false);
     } catch (error) {
       console.error('Logout error:', error);

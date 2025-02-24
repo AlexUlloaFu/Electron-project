@@ -1,27 +1,16 @@
-// src/api/auth.ts
-import { secureStorage } from '../utils/storage';
 
 export interface AuthResponse {
   token?: string;
   error?: string;
 }
 
+const API_URL = process.env.REACT_APP_BACKEND_URL
+
 export const authService = {
-  async storeToken(token: string): Promise<void> {
-    await secureStorage.storeToken(token);
-  },
-
-  async getToken(): Promise<string | null> {
-    return await secureStorage.getToken();
-  },
-
-   clearToken: async() : Promise<void> => {
-    secureStorage.clearToken();
-  },
 
   register: async (email: string, password: string): Promise<AuthResponse> => {
     try {
-      const response = await fetch('http://localhost:4000/auth/register', {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -35,7 +24,7 @@ export const authService = {
 
   login: async (email: string, password: string): Promise<AuthResponse> => {
     try {
-      const response = await fetch('http://localhost:4000/auth/login', {
+      const response = await fetch(`${API_URL}}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
