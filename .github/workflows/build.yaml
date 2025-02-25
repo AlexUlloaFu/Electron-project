@@ -13,14 +13,26 @@ jobs:
           ]
     runs-on: ${{ matrix.os.image }}
     steps:
-      - name: Github checkout
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: Use Node.js
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+
       - run: npm ci
-      - name: Publish app
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        run: npm run publish
+
+      - name: Build packages
+        run: npm run make -- --platform=${{ matrix.os.platform }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os.name }}-packages
+          path: |
+            out/make/*
+            out/**/*.zip
+            out/**/*.exe
+            out/**/*.dmg
