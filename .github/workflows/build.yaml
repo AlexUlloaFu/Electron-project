@@ -1,52 +1,26 @@
-name: Release Electron App
+name: Release app
 on:
   workflow_dispatch:
-
 jobs:
-  build-and-publish:
+  build:
     strategy:
       matrix:
-        os: 
-          - { name: 'linux', image: 'ubuntu-latest', platform: 'linux' }
-          - { name: 'windows', image: 'windows-latest', platform: 'win32' }
-          - { name: 'macos', image: 'macos-latest', platform: 'darwin' }
+        os:
+          [
+            { name: 'linux', image: 'ubuntu-latest' },
+            { name: 'windows', image: 'windows-latest' },
+            { name: 'macos', image: 'macos-latest' },
+          ]
     runs-on: ${{ matrix.os.image }}
-    permissions:
-      contents: write  # Needed for GitHub Releases
-      packages: write  # If publishing to npm/GitHub Packages
-      
     steps:
-      - name: Checkout code
+      - name: Github checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Needed for version tagging
-          
-      - name: Setup Node.js
+      - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
-          
-      - name: Build for platform
-        run: npm run make -- --platform=${{ matrix.os.platform }}
-        
-      - name: Publish artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.os.name }}-build
-          path: |
-            out/make/*
-            
-      - name: Publish release
-        if: matrix.os.name == 'linux'  # Only run once per workflow
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ github.run_number }}
-          generate_release_notes: true
-          files: |
-            out/make/**/*
+      - run: npm ci
+      - name: Publish app
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: npm run publish
