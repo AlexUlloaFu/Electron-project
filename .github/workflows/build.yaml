@@ -50,6 +50,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+            token: ${{ secrets.PAT }} 
+            fetch-depth: 0
       - name: Create Git Tag
         id: tag
         run: |
@@ -60,6 +63,7 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.tag.outputs.TAG }}
+          release_name: Release ${{ steps.tag.outputs.TAG }}
           files: |
             out/make/*.exe
             out/make/*.dmg
